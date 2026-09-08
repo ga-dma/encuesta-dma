@@ -19,34 +19,32 @@ export async function saveQuizResult(payload: QuizResultPayload) {
 
     try {
         const sql = getDb();
-
-        const prefix = payload.category_full_id;
-        const q1 = payload.answers[`${prefix}1`] || null;
-        const q2 = payload.answers[`${prefix}2`] || null;
-        const q3 = payload.answers[`${prefix}3`] || null;
-        const q4 = payload.answers[`${prefix}4`] || null;
-        const q5 = payload.answers[`${prefix}5`] || null;
+        const a = payload.answers;
 
         const result = await sql`
             INSERT INTO quiz_submissions (
-                category_id, 
-                category_name, 
-                q1, q2, q3, q4, q5, 
-                score, 
-                maturity_title, 
-                description, 
-                suggestion, 
-                email
+                category_id,
+                category_name,
+                score,
+                maturity_title,
+                description,
+                suggestion,
+                email,
+                miq1, miq2, miq3, miq4, miq5,
+                biq1, biq2, biq3, biq4, biq5,
+                deq1, deq2, deq3, deq4, deq5
             )
             VALUES (
                 ${payload.category_id},
                 ${payload.category_name},
-                ${q1}, ${q2}, ${q3}, ${q4}, ${q5},
                 ${payload.score},
                 ${payload.maturityTitle},
                 ${payload.description},
                 ${payload.suggestion},
-                ${payload.email || null}
+                ${payload.email || null},
+                ${a.MIQ1 ?? null}, ${a.MIQ2 ?? null}, ${a.MIQ3 ?? null}, ${a.MIQ4 ?? null}, ${a.MIQ5 ?? null},
+                ${a.BIQ1 ?? null}, ${a.BIQ2 ?? null}, ${a.BIQ3 ?? null}, ${a.BIQ4 ?? null}, ${a.BIQ5 ?? null},
+                ${a.DEQ1 ?? null}, ${a.DEQ2 ?? null}, ${a.DEQ3 ?? null}, ${a.DEQ4 ?? null}, ${a.DEQ5 ?? null}
             )
             RETURNING id
         `;
